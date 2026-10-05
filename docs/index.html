@@ -69,6 +69,7 @@ h2 { font-size: clamp(24px, 3vw, 32px); margin: 72px 0 6px; letter-spacing: -.01
 .shot span small { color: var(--muted); }
 .keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .scenes { margin-top: 18px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.spk[data-sponsor-page] { margin-top: 48px; }
 .scene { display: grid; grid-template-columns: 54px 1.1fr 1.6fr; gap: 14px; padding: 14px 18px; background: var(--card); border-top: 1px solid var(--line); align-items: start; }
 .scene:first-child { border-top: 0; }
 .scene .n { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: rgba(246,125,28,.18); color: var(--gold); }
@@ -158,6 +159,9 @@ src="https://www.facebook.com/tr?id=1152715006830829&ev=PageView&noscript=1"
     </div>
     <div class="hero-img"><img src="assets/poster.jpg" alt="Poster phim The Last Lantern — Ngọn Đèn Cuối Cùng" width="1280" height="720"></div>
   </header>
+
+  <!-- Quảng cáo có hạn: nội dung + ngày hết hạn ở app.danghuuson.com/sponsors/sponsors.json (trang "muse"); hết hạn tự ẩn -->
+  <div data-sponsor-page="muse" data-theme="dark"></div>
 
   <h2 id="video">🎥 Video giới thiệu</h2>
   <p class="sub">Muse AI — tạo ảnh, video, audio — có cảnh từ phim mẫu “The Last Lantern”.</p>
@@ -277,5 +281,6 @@ document.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("clic
   setTimeout(() => (b.textContent = "Sao chép"), 2000);
 }));
 </script>
+<script src="https://app.danghuuson.com/sponsors/sponsors.js" defer></script>
 </body>
 </html>
