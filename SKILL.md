@@ -37,20 +37,32 @@ Hỏi user 3 câu dưới đây trước khi làm bất cứ việc gì. Chưa c
 ## Workflow
 Làm theo đúng thứ tự 7 giai đoạn. Mỗi giai đoạn có prompt mẫu và checklist trong `references/`. Không bỏ qua giai đoạn nào.
 
+> ⛔ **Chuỗi approval gate bắt buộc** — user duyệt xong gate trước mới được làm gate sau:
+> 1. **Gate A — Storyboard:** trình story bible/storyboard cho user duyệt → duyệt xong mới được vẽ character sheets.
+> 2. **Gate B — Character sheets:** trình sheet từng nhân vật cho user duyệt → duyệt xong mới được vẽ keyframes.
+> 3. **Gate C — Keyframes:** trình TOÀN BỘ keyframes cho user duyệt → duyệt xong mới được generate video.
+> 4. **Gate D — Từng cảnh:** trình từng clip cảnh riêng lẻ cho user duyệt → user OK HẾT mọi cảnh mới được ghép phim (assembly).
+> Không tự ý bỏ qua gate nào. Vi phạm = làm lại từ bước chưa được duyệt.
+
 1. **Character sheets** → `references/01-character-sheets.md`
    Vẽ character reference sheet cho từng nhân vật theo đúng tỷ lệ đã khóa ở Giai đoạn 0 (nhiều góc + biểu cảm). Đây là "khóa nhân vật" — mọi asset sau này đều phải nạp sheet này.
+   Chỉ bắt đầu sau khi user đã duyệt storyboard (Gate A). Vẽ xong → trình user duyệt (Gate B) mới được sang giai đoạn 3.
 2. **Thảo luận & chốt kịch bản** → `references/02-story-and-script.md`
    Hỏi user để chốt logline, nhân vật, thế giới, rồi viết **Story Bible** (`STORY.md`): character lock chép nguyên văn, style lock, luật continuity, từng cảnh (beat, first/last frame, VO, nhạc). Số cảnh = con số đã chốt ở Giai đoạn 0.
+   Viết xong → trình user duyệt storyboard (Gate A) mới được sang giai đoạn 1.
 3. **Keyframes** → `references/03-keyframes.md`
    Vẽ K1..K(N+1) keyframe đúng tỷ lệ đã khóa, mỗi keyframe nạp character sheet làm ref. Keyframe cuối cảnh N = keyframe đầu cảnh N+1 (luật match-cut).
+   ⛔ **Gate C — bắt buộc:** trình TOÀN BỘ keyframes cho user duyệt TRƯỚC KHI generate bất kỳ video nào. User chưa duyệt = KHÔNG được sang giai đoạn 5.
 4. **Mega prompt từng cảnh** → `references/04-mega-prompts.md`
    Viết 1 mega prompt copy-paste cho mỗi cảnh: global locks (kèm STRICT ASPECT RATIO LOCK) + thứ tự nạp ref + FIRST FRAME / MOTION / CAMERA / LAST FRAME / SOUND / MUSIC / VO.
 5. **Generate video** → `references/05-video-generation.md`
    Chạy `media-generation` cho từng cảnh (nạp sheet + first/last frame), verify on-model, continuity và tỷ lệ khung hình bằng ffprobe.
+   ⛔ **Gate D — bắt buộc:** trình TỪNG CẢNH (clip riêng lẻ) cho user duyệt. Cảnh nào chưa đạt thì làm lại cảnh đó. KHÔNG ghép phim khi còn cảnh chưa được duyệt.
 6. **Làm VO** → `references/06-vo-production.md`
    Viết kịch bản VO kiểu kể chuyện bằng ngôn ngữ đã chọn ở Giai đoạn 0 (không nói liên tục, ~60% thời lượng), thu bằng TTS hoặc để user thu ngoài.
 7. **Dựng phim** → `references/07-assembly.md`
    Normalize về độ phân giải chuẩn của tỷ lệ đã khóa (16:9 → 1280×720; 9:16 → 720×1280), 24fps bằng ffmpeg, nối các cảnh, mix VO đúng timecode, verify file cuối.
+   Chỉ chạy giai đoạn này khi user đã OK HẾT tất cả các cảnh ở Gate D.
 
 > Trước khi bắt đầu dự án mới, đọc `references/08-lessons.md` — 10 bài học xương máu từ dự án "The Last Lantern".
 
@@ -75,3 +87,5 @@ Kết thúc pipeline phải có:
 7. **Normalize trước khi nối:** mọi clip phải về cùng độ phân giải, fps trước khi concat.
 8. **VO kể chuyện, không đọc liên tục:** mỗi cảnh 1–2 câu đặt đầu cảnh, chừa khoảng lặng cho hình ảnh/nhạc. Cảnh cảm xúc cao trào có thể để nhân vật "thở" thay vì VO.
 9. Mọi con số user sẽ hành động theo (số cảnh, thời lượng, độ phân giải) phải lấy từ output tool thực tế hoặc từ tính toán ở Giai đoạn 0, không đoán.
+10. **Chuỗi approval gate là bắt buộc, không tự ý bỏ qua:** Gate A (duyệt storyboard) → Gate B (duyệt character sheets) → Gate C (duyệt keyframes) → Gate D (duyệt từng cảnh) → mới được assembly. Mỗi gate phải có phê duyệt rõ ràng của user trước khi làm bước tiếp theo. Tự ý generate/ghép sớm = làm sai quy trình, phải làm lại từ bước chưa được duyệt.
+11. Khi user yêu cầu sửa đổi giữa chừng (đổi nhân vật, sửa keyframe, đổi quy trình), dừng việc đang chạy, cập nhật character lock / story bible / skill cho khớp, rồi mới tiếp tục từ bước bị ảnh hưởng.
